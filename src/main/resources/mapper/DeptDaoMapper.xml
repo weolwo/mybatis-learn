@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.poplar.dao.DeptDao">
+    <resultMap id="EmpAndDeptByDeptno" type="com.poplar.bean.Dept">
+
+        <id property="deptno" column="deptno"/>
+        <result property="dname" column="dname"/>
+        <result property="loc" column="loc"/>
+        <!---第一种方式-->
+        <collection property="emps" ofType="com.poplar.bean.Emp">
+            <id property="empno" column="empno"/>
+            <result property="ename" column="ename"/>
+            <result property="job" column="job"/>
+            <result property="mgr" column="mgr"/>
+            <result property="comm" column="comm"/>
+            <result property="hiredate" column="hiredate"/>
+            <result property="sal" column="sal"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="EmpAndDeptByDeptnoBySingle" type="com.poplar.bean.Dept">
+
+        <id property="deptno" column="deptno"/>
+        <result property="dname" column="dname"/>
+        <result property="loc" column="loc"/>
+        <!--第二种方式,会查询两次，和第一种使用join方式相比，如果在数据量大的情况下，把join查询分成两次单表查询性能可能会好一些
+        DEBUG [main] - ==>  Preparing: select * from dept where deptno=?
+        DEBUG [main] - ==> Parameters: 10(Integer)
+        TRACE [main] - <==    Columns: deptno, dname, loc
+        TRACE [main] - <==        Row: 10, ACCOUNTING, NEW YORK
+        DEBUG [main] - ====>  Preparing: select * from emp where deptno = ?
+        -->
+        <collection property="emps" ofType="com.poplar.bean.Emp" select="com.poplar.dao.DeptDao.selectEmpByDeptno" column="deptno"/>
+    </resultMap>
+
+    <select id="selectDeptByDeptno" resultMap="EmpAndDeptByDeptno">
+        select * from dept left join emp on dept.deptno  = emp.deptno where dept.deptno=#{deptno}
+    </select>
+
+    <select id="selectDeptByDeptnoBySingle" resultMap="EmpAndDeptByDeptnoBySingle">
+        select * from dept where deptno=#{deptno}
+    </select>
+
+    <select id="selectEmpByDeptno" resultType="com.poplar.bean.Emp">
+        select * from emp where deptno = #{deptno}
+    </select>
+
+</mapper>

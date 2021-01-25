@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <properties resource="jdbc.properties"/>
+    <settings>
+        <!--fetchType(细粒度的)	可选的。有效值为 lazy 和 eager。 指定属性后，
+        将在映射中忽略全局配置参数 lazyLoadingEnabled（全局的），使用属性的值。-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+    </settings>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="driver" value="${jdbc.driver}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <!--使用class时需要配置pom
+         <build>
+           <resources>
+               <resource>
+                   <directory>src/main/java</directory>
+                   <includes>
+                       <include>**/*.xml</include>
+                   </includes>
+               </resource>
+           </resources>
+        </build>
+        -->
+        <mapper resource="mapper/EmpDaoMapper.xml"/>
+        <mapper resource="mapper/UserDaoMapper.xml"/>
+        <mapper resource="mapper/DeptDaoMapper.xml"/>
+    </mappers>
+</configuration>
